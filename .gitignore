@@ -288,4 +288,13 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm
 
+# Settings
 *.idea
+
+# Security
+data/train/good/
+data/test/good/
+data/test/missing/
+data/test/extra/
+data/test/size/
+data/test/pitch/
