@@ -292,9 +292,4 @@ pyrightconfig.json
 *.idea
 
 # Security
-data/train/good/
-data/test/good/
-data/test/missing/
-data/test/extra/
-data/test/size/
-data/test/pitch/
+data/**/**/*.png
