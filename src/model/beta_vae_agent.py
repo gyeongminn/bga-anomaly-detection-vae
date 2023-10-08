@@ -1,29 +1,31 @@
 import tensorflow as tf
 from keras.models import Model
-import matplotlib.pyplot as plt
 
-from src.model.beta_vae import BetaVAE
+from src.model.vae import VAE
+from src.visualization.plots import show_history
 from configs import config
 
 
-class BetaVaeAgent(Model):
-
+class BetaVAE(Model):
     def __init__(self, model_name: str):
-        super(BetaVaeAgent, self).__init__()
+        super(BetaVAE, self).__init__()
 
         self.model_name = model_name
-        self.latent_dim = config.parameter['latent_dim']
-        self.beta = config.parameter['beta']
-        self.beta_vae = BetaVAE(config.parameter['latent_dim'])
-        self.beta_vae.build(input_shape=config.parameter['input_shape'])  # (batch, H, W, C)
-        self.optimizer = tf.keras.optimizers.Adam(learning_rate=config.parameter['learning_rate'])
+        self.latent_dim = config.parameter["latent_dim"]
+        self.beta = config.parameter["beta"]
+        self.beta_vae = VAE(config.parameter["latent_dim"])
+        self.beta_vae.build(input_shape=config.parameter["input_shape"])
+        self.optimizer = tf.keras.optimizers.Adam(
+            learning_rate=config.parameter["learning_rate"]
+        )
 
     def loss_function(self, x):
         x_hat, z, mu, log_var = self.beta_vae(x)
         recons_loss = tf.reduce_mean(
             tf.reduce_sum(
-                # tf.keras.losses.binary_crossentropy(x, x_hat), axis=(1, 2)
-                tf.keras.losses.MSE(x, x_hat), axis=(1, 2)
+                # tf.keras.losses.binary_crossentropy(x, x_hat),
+                tf.keras.losses.MSE(x, x_hat),
+                axis=(1, 2),
             )
         )
 
@@ -39,28 +41,27 @@ class BetaVaeAgent(Model):
         gradients = tape.gradient(loss, self.trainable_variables)
         self.optimizer.apply_gradients(zip(gradients, self.trainable_variables))
 
-        return {'total_loss': loss, 'recons_loss': recons_loss, 'kl_loss': kl_loss}
+        return {"total_loss": loss, "recons_loss": recons_loss, "kl_loss": kl_loss}
 
     def save_model(self):
-        model_dir = config.parameter['base_dir'] + '/weights/' + self.model_name + '.h5'
+        model_dir = config.parameter["base_dir"] + "/weights/" + self.model_name + ".h5"
         try:
             self.beta_vae.save_weights(model_dir)
-            print('model saved')
+            print("model saved")
         except (Exception,):
-            print('cannot save model')
+            print(f"model {self.model_name} saved")
             exit(1)
 
     def load_model(self):
-        model_dir = config.parameter['base_dir'] + '/weights/' + self.model_name + '.h5'
+        model_dir = config.parameter["base_dir"] + "/weights/" + self.model_name + ".h5"
         try:
             self.beta_vae.load_weights(model_dir)
-            print('model loaded')
+            print(f"model {self.model_name} loaded")
         except (Exception,):
-            print('weights file not found')
+            print("weights file not found")
             exit(1)
 
     def train(self, train_dataset, epochs):
-
         train_loss_history = []
         kl_loss_history = []
         recons_loss_history = []
@@ -74,25 +75,20 @@ class BetaVaeAgent(Model):
 
             for step, batch in enumerate(train_dataset):
                 loss_dict = self.train_step(batch)
-                epoch_train_loss.append(loss_dict['total_loss'].numpy())
-                epoch_recons_loss.append(loss_dict['recons_loss'].numpy())
-                epoch_kl_loss.append(loss_dict['kl_loss'].numpy())
+                epoch_train_loss.append(loss_dict["total_loss"].numpy())
+                epoch_recons_loss.append(loss_dict["recons_loss"].numpy())
+                epoch_kl_loss.append(loss_dict["kl_loss"].numpy())
 
                 if step % 100 == 0:
-                    loss = loss_dict['total_loss']
-                    recons_loss = loss_dict['recons_loss']
-                    kl_loss = loss_dict['kl_loss']
-                    print(f"Total Loss: {loss:.4f}, Recon Loss: {recons_loss:.4f}, KL Loss: {kl_loss:.4f}")
+                    loss = loss_dict["total_loss"]
+                    recons_loss = loss_dict["recons_loss"]
+                    kl_loss = loss_dict["kl_loss"]
+                    print(
+                        f"Total Loss: {loss:.4f}, Recon Loss: {recons_loss:.4f}, KL Loss: {kl_loss:.4f}"
+                    )
 
             train_loss_history.append(tf.reduce_mean(epoch_train_loss))
             kl_loss_history.append(tf.reduce_mean(epoch_kl_loss))
             recons_loss_history.append(tf.reduce_mean(epoch_recons_loss))
 
-        # plot loss history
-        plt.plot(train_loss_history, label='Training Loss')
-        plt.plot(kl_loss_history, label='KL Loss')
-        plt.plot(recons_loss_history, label='Recons Loss')
-        plt.xlabel('Epoch')
-        plt.ylabel('Loss')
-        plt.legend()
-        plt.show()
+        show_history(train_loss_history, kl_loss_history, recons_loss_history)

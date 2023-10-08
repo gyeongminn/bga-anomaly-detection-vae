@@ -8,27 +8,27 @@ from configs import config
 
 def load_data_gen():
     train_gen = image_dataset_from_directory(
-        config.parameter['base_dir'] + '/data/train',
-        labels='inferred',
-        label_mode='int',
-        class_names=['good'],
-        color_mode='grayscale',
-        batch_size=config.parameter['batch_size'],
-        image_size=config.parameter['image_size'],
-        seed=config.parameter['random_seed'],
-        shuffle=True
+        config.parameter["base_dir"] + "/data/train",
+        labels="inferred",
+        label_mode="int",
+        class_names=["good"],
+        color_mode="grayscale",
+        batch_size=config.parameter["batch_size"],
+        image_size=config.parameter["image_size"],
+        seed=config.parameter["random_seed"],
+        shuffle=True,
     )
 
     test_gen = image_dataset_from_directory(
-        config.parameter['base_dir'] + '/data/test',
-        labels='inferred',
-        label_mode='int',
-        class_names=config.parameter['class_label'],
-        color_mode='grayscale',
-        batch_size=config.parameter['batch_size'],
-        image_size=config.parameter['image_size'],
-        seed=config.parameter['random_seed'],
-        shuffle=True
+        config.parameter["base_dir"] + "/data/test",
+        labels="inferred",
+        label_mode="int",
+        class_names=config.parameter["class_label"],
+        color_mode="grayscale",
+        batch_size=config.parameter["batch_size"],
+        image_size=config.parameter["image_size"],
+        seed=config.parameter["random_seed"],
+        shuffle=True,
     )
 
     return train_gen, test_gen
@@ -42,7 +42,7 @@ def convert_numpy_arr(data_gen):
 
     x = np.array(x)
     y = np.array(y)
-    x = x.astype('float32') / 255.
+    x = x.astype("float32") / 255.0
 
     return x, y
 
@@ -56,5 +56,5 @@ def load_data():
 
 
 def tensor_slices(x_data):
-    batch_size = config.parameter['batch_size']
+    batch_size = config.parameter["batch_size"]
     return data.Dataset.from_tensor_slices(x_data).batch(batch_size)

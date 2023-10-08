@@ -5,14 +5,14 @@ if __name__ == "__main__":
 
     for x, y in train_ds:
         print()
-        print('Training')
+        print("Training")
         print(x.shape, y.shape)
         print(y[:10])
         break
 
     for x, y in test_ds:
         print()
-        print('Testing')
+        print("Testing")
         print(x.shape, y.shape)
         print(y[:10])
         break
