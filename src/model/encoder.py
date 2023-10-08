@@ -17,9 +17,8 @@ class Encoder(Model):
     def call(self, x):
         x = self.h1(x)
         x = self.h2(x)
-        x = self.flatten(x)
         x = self.h3(x)
-
+        x = self.flatten(x)
         mu = self.mu(x)
         log_var = self.log_var(x)
 
