@@ -16,7 +16,7 @@ def show_history(train_loss, kl_loss, recon_loss):
 
 
 def show_score_plot(score_data, min_score, max_score):
-    x_bins = np.linspace(min_score, max_score, 10)
+    x_bins = np.linspace(min_score, max_score, 16)
     for idx, category_scores in enumerate(score_data):
         y, _ = np.histogram(category_scores, bins=x_bins)
         plt.plot(x_bins[:-1], y, label=config.parameter["class_label"][idx])
