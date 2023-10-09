@@ -3,7 +3,7 @@ import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 info = {
-    "name": "BGA Anomaly detection by exploiting Parallel Variational AutoEncoders",
+    "name": "BGA Anomaly Detection",
     "author": "Gyeongmin Lee",
     "email": "gyeongmin.hansung.ac.kr",
 }
