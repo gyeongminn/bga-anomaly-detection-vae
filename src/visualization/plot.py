@@ -18,7 +18,7 @@ def show_history(train_loss, kl_loss, recon_loss):
 def show_score_density_plot(score_data):
     for idx, category_scores in enumerate(score_data):
         sns.kdeplot(
-            category_scores, shade=True, label=config.parameter["class_names"][idx]
+            category_scores, fill=True, label=config.parameter["class_names"][idx]
         )
 
     plt.xlabel("Scores")
