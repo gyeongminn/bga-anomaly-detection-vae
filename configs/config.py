@@ -10,13 +10,12 @@ info = {
 
 parameter = {
     "base_dir": "D:/work/Github/bga-anomaly-detection",
-    "class_label": ["good", "extra", "missing", "pitch", "size"],
+    "class_names": ["good", "extra", "missing", "pitch", "size"],
     "image_size": (256, 256),
     "input_shape": (None, 256, 256, 1),
     "random_seed": 123,
     "batch_size": 128,
-    "epochs": 300,
+    "epochs": 100,
     "latent_dim": 2,
-    "beta": 1,
     "learning_rate": 1e-3,
 }

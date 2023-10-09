@@ -1,40 +1,19 @@
 import tensorflow as tf
 from keras.models import Model
 
-from src.model.shallow.encoder import Encoder
-from src.model.shallow.decoder import Decoder
-from src.visualization.plots import show_history
+from src.model.vae import Vae
+from src.data.data_loader import tensor_slices
+from src.visualization.plot import show_history
 from configs import config
 
 
-class VAE(Model):
-    def __init__(self, latent_dim):
-        super(VAE, self).__init__()
+class VaeAgent(Model):
+    def __init__(self):
+        super(VaeAgent, self).__init__()
 
-        self.latent_dim = latent_dim
-        self.encoder = Encoder(latent_dim)
-        self.decoder = Decoder()
-
-    @staticmethod
-    def reparameterize(mu, log_var):
-        epsilon = tf.random.normal(shape=tf.shape(mu))
-        return epsilon * tf.exp(0.5 * log_var) + mu
-
-    def call(self, x):
-        mu, log_var = self.encoder(x)
-        encoded = self.reparameterize(mu, log_var)
-        decoded = self.decoder(encoded)
-        return decoded, encoded, mu, log_var
-
-
-class ShallowVAE(Model):
-    def __init__(self, model_name):
-        super(ShallowVAE, self).__init__()
-
-        self.model_name = model_name + "_s"
+        self.class_names = config.parameter["class_names"]
         self.latent_dim = config.parameter["latent_dim"]
-        self.beta = config.parameter["beta"]
-        self.vae = VAE(config.parameter["latent_dim"])
+        self.vae = Vae(config.parameter["latent_dim"])
         self.vae.build(input_shape=config.parameter["input_shape"])
         self.optimizer = tf.keras.optimizers.Adam(
             learning_rate=config.parameter["learning_rate"]
@@ -51,7 +30,7 @@ class ShallowVAE(Model):
 
         kl_loss = -0.5 * (1 + log_var - tf.square(mu) - tf.exp(log_var))
         kl_loss = tf.reduce_mean(tf.reduce_sum(kl_loss, axis=1))
-        loss = recons_loss + self.beta * kl_loss
+        loss = recons_loss + kl_loss
         return loss, recons_loss, kl_loss
 
     def train_step(self, x):
@@ -64,24 +43,27 @@ class ShallowVAE(Model):
         return {"total_loss": loss, "recons_loss": recons_loss, "kl_loss": kl_loss}
 
     def save_model(self):
-        model_dir = config.parameter["base_dir"] + "/weights/" + self.model_name + ".h5"
+        model_dir = f"{config.parameter['base_dir']}/weights/model.h5"
         try:
             self.vae.save_weights(model_dir)
-            print(f"model {self.model_name} saved")
+            print(f"model saved")
         except (Exception,):
             print(f"cannot save model")
             exit(1)
 
     def load_model(self):
-        model_dir = config.parameter["base_dir"] + "/weights/" + self.model_name + ".h5"
+        model_dir = f"{config.parameter['base_dir']}/weights/model.h5"
         try:
             self.vae.load_weights(model_dir)
-            print(f"model {self.model_name} loaded")
+            print(f"model loaded")
         except (Exception,):
-            print("weights file not found")
+            print("cannot load weights file")
             exit(1)
 
-    def train(self, train_dataset, epochs):
+    def train(self, x):
+        epochs = config.parameter["epochs"]
+        dataset = tensor_slices(x)
+
         train_loss_history = []
         kl_loss_history = []
         recons_loss_history = []
@@ -93,7 +75,7 @@ class ShallowVAE(Model):
             epoch_kl_loss = []
             epoch_recons_loss = []
 
-            for step, batch in enumerate(train_dataset):
+            for step, batch in enumerate(dataset):
                 loss_dict = self.train_step(batch)
                 epoch_train_loss.append(loss_dict["total_loss"].numpy())
                 epoch_recons_loss.append(loss_dict["recons_loss"].numpy())
@@ -112,3 +94,7 @@ class ShallowVAE(Model):
             recons_loss_history.append(tf.reduce_mean(epoch_recons_loss))
 
         show_history(train_loss_history, kl_loss_history, recons_loss_history)
+
+    def predict(self, x):
+        dataset = tensor_slices(x)
+        return self.vae.predict(dataset)[0]

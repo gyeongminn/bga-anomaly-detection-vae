@@ -40,7 +40,7 @@ def load_test_data():
         config.parameter["base_dir"] + "/data/test",
         labels="inferred",
         label_mode="int",
-        class_names=config.parameter["class_label"],
+        class_names=config.parameter["class_names"],
         color_mode="grayscale",
         batch_size=config.parameter["batch_size"],
         image_size=config.parameter["image_size"],
