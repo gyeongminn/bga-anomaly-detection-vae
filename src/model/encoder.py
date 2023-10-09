@@ -6,10 +6,9 @@ class Encoder(Model):
     def __init__(self, latent_dim):
         super(Encoder, self).__init__()
 
-        self.h1 = Conv2D(8, 3, strides=2, padding="same", activation="relu")
-        self.h2 = Conv2D(16, 3, strides=2, padding="same", activation="relu")
-        self.h3 = Conv2D(32, 3, strides=2, padding="same", activation="relu")
-        self.h4 = Dense(16, activation="relu")
+        self.h1 = Conv2D(16, 3, strides=2, padding="same", activation="relu")
+        self.h2 = Conv2D(32, 3, strides=2, padding="same", activation="relu")
+        self.h3 = Dense(16, activation="relu")
         self.flatten = Flatten()
         self.mu = Dense(latent_dim)
         self.log_var = Dense(latent_dim)
@@ -18,7 +17,6 @@ class Encoder(Model):
         x = self.h1(x)
         x = self.h2(x)
         x = self.h3(x)
-        x = self.h4(x)
         x = self.flatten(x)
         mu = self.mu(x)
         log_var = self.log_var(x)

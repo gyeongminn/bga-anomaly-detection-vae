@@ -5,7 +5,7 @@ from src.data import data_loader
 from src.model.vae_agent import VaeAgent
 from src.visualization.image import show_images_with_data
 from src.visualization.result import show_roc_curve
-from src.visualization.plot import show_score_plot
+from src.visualization.plot import show_score_density_plot
 
 
 def cosine_score(data1, data2):
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         class_images[label].append(image)
         class_scores[label].append(score)
 
-    show_score_plot(class_scores, min(scores), max(scores))
+    show_score_density_plot(class_scores)
 
     for i in range(len(vae.class_names)):
         show_images_with_data(
