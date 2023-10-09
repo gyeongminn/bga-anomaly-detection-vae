@@ -21,7 +21,7 @@ def cosine_score(data1, data2):
 
 
 if __name__ == "__main__":
-    pvae = ParallelVAEs("231009")
+    pvae = ParallelVAEs("231008")
     pvae.load_model()
 
     x_test, y_test = data_loader.load_test_data()

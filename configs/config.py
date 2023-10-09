@@ -15,7 +15,7 @@ parameter = {
     "input_shape": (None, 256, 256, 1),
     "random_seed": 123,
     "batch_size": 128,
-    "epochs": 100,
+    "epochs": 300,
     "latent_dim": 2,
     "beta": 1,
     "learning_rate": 1e-3,
