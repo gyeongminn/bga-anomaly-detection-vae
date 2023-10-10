@@ -12,7 +12,7 @@ class Decoder(Model):
         self.h2 = Conv2DTranspose(16, 3, strides=2, padding="same", activation="relu")
         self.output_layer = Conv2DTranspose(1, 3, padding="same", activation="sigmoid")
 
-    def call(self, z):
+    def call(self, z, training=None, mask=None):
         x = self.fc(z)
         x = self.reshape(x)
         x = self.h1(x)

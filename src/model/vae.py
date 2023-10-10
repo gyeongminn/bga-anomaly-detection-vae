@@ -18,7 +18,7 @@ class Vae(Model):
         epsilon = tf.random.normal(shape=tf.shape(mu))
         return epsilon * tf.exp(0.5 * log_var) + mu
 
-    def call(self, x):
+    def call(self, x, training=None, mask=None):
         mu, log_var = self.encoder(x)
         encoded = self.reparameterize(mu, log_var)
         decoded = self.decoder(encoded)

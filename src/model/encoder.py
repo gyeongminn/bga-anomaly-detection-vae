@@ -13,7 +13,7 @@ class Encoder(Model):
         self.mu = Dense(latent_dim)
         self.log_var = Dense(latent_dim)
 
-    def call(self, x):
+    def call(self, x, training=None, mask=None):
         x = self.h1(x)
         x = self.h2(x)
         x = self.h3(x)
