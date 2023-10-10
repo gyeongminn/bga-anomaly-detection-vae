@@ -13,6 +13,7 @@ from src.visualization.plot import show_score_density_plot, show_roc_curve
 
 np_config.enable_numpy_behavior()
 
+from time import time
 
 if __name__ == "__main__":
     vae = VaeAgent()
@@ -21,12 +22,17 @@ if __name__ == "__main__":
     x_test, y_test = data_loader.load_test_data()
     y_test_bin = [1 if x == 0 else 0 for x in y_test]
 
+    start = time()
     gen_data = vae.predict(x_test)
 
     scores = []
     for x, y in zip(x_test, gen_data):
         similarity = cosine_similarity(x.reshape(1, -1), y.reshape(1, -1))[0][0]
         scores.append(similarity)
+
+    end = time()
+    print(f"inspection time ({len(x_test)} image): {(end - start):.3f}s")
+    print(f"inspection time (1 image): {((end - start) / len(x_test) * 1000):.3f}ms")
 
     class_images = [[] for _ in range(len(vae.class_names))]
     class_scores = [[] for _ in range(len(vae.class_names))]

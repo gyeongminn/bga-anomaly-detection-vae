@@ -1,5 +1,6 @@
 import tensorflow as tf
 from keras.models import Model
+from time import time
 
 from src.model.vae import Vae
 from src.data.data_loader import tensor_slices
@@ -61,6 +62,7 @@ class VaeAgent(Model):
             exit(1)
 
     def train(self, x):
+        post = time()
         epochs = config.parameter["epochs"]
         dataset = tensor_slices(x)
 
@@ -69,7 +71,8 @@ class VaeAgent(Model):
         recons_loss_history = []
 
         for epoch in range(1, epochs + 1):
-            print(f"Epoch {epoch}/{epochs}")
+            print(f"Epoch {epoch}/{epochs} ({(time()-post) * 1000:.0f}ms)")
+            post = time()
 
             epoch_train_loss = []
             epoch_kl_loss = []
