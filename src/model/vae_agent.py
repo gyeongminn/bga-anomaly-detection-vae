@@ -71,7 +71,7 @@ class VaeAgent(Model):
         recons_loss_history = []
 
         for epoch in range(1, epochs + 1):
-            print(f"Epoch {epoch}/{epochs} ({(time()-post) * 1000:.0f}ms)")
+            print(f"Epoch {epoch}/{epochs} ({(time() - post) * 1000:.0f}ms)")
             post = time()
 
             epoch_train_loss = []
