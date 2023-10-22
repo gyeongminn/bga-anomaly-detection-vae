@@ -11,10 +11,10 @@ In this study, we propose a method based on Variational AutoEncoders (VAE), elim
 ![Method](https://github.com/gyeongminn/bga-anomaly-detection/assets/97784561/3f16c781-97be-469e-ab74-95fceeedba3b)
 
 # Model evaluation
-
 |Accuracy|Precision|Recall|Specificity|F1-Score|AUC|Speed|
 |---|---|---|---|---|---|---|
 |0.849|0.958|0.946|0.859|0.898|0.919|3.424ms|
-
+### Density Plot
 ![Density Plots](/assets/predict_density_plot.png)
+### ROC Curve
 ![ROC Curve](/assets/roc_curve.png)
