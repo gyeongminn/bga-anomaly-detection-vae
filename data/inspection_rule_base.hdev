@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="22.11.2.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>* good sample</c>
+<l>read_image (GoodSample, 'train/good/real_1')</l>
+<l>rgb1_to_gray (GoodSample, GoodSample)</l>
+<c></c>
+<c>* get ball</c>
+<l>binary_threshold (GoodSample, Balls, 'max_separability', 'light', UsedThreshold)</l>
+<l>connection (Balls, Balls)</l>
+<l>sort_region (Balls, Balls, 'upper_left', 'true', 'row')</l>
+<l>opening_circle (Balls, Balls, 3.5)</l>
+<l>select_shape (Balls, Balls, 'area', 'and', 50, 200)</l>
+<c></c>
+<c>* get ball's point</c>
+<l>count_obj (Balls, GoodBallCount)</l>
+<l>region_features (Balls, 'area', GoodBallSize)</l>
+<l>region_features (Balls, 'row', GoodBallRow)</l>
+<l>region_features (Balls, 'column', GoodBallCol)</l>
+<c></c>
+<l>dev_update_off ()</l>
+<l>TP := 0</l>
+<l>FP := 0</l>
+<l>FN := 0</l>
+<l>TN := 0</l>
+<l>stop()</l>
+<c></c>
+<l>count_seconds (Start)</l>
+<l>list_image_files ('/test/good', 'default', [], ImageFiles)</l>
+<l>Inspection (GoodSample, ImageFiles, GoodBallCount, GoodBallSize, GoodBallRow, GoodBallCol, Result)</l>
+<l>for Idx := 0 to |ImageFiles| - 1 by 1</l>
+<l>    if (Result[Idx] == 'good')</l>
+<l>        TP := TP + 1</l>
+<l>    else</l>
+<l>        FN := FN + 1</l>
+<l>    endif</l>
+<l>endfor</l>
+<l>* stop()</l>
+<c></c>
+<l>list_image_files ('/test/extra', 'default', [], ImageFiles)</l>
+<l>Inspection (GoodSample, ImageFiles, GoodBallCount, GoodBallSize, GoodBallRow, GoodBallCol, Result)</l>
+<l>for Idx := 0 to |ImageFiles| - 1 by 1</l>
+<l>    if (Result[Idx] == 'good')</l>
+<l>        FP := FP + 1</l>
+<l>    else</l>
+<l>        TN := TN + 1</l>
+<l>    endif</l>
+<l>endfor</l>
+<l>* stop()</l>
+<c></c>
+<l>list_image_files ('/test/missing', 'default', [], ImageFiles)</l>
+<l>Inspection (GoodSample, ImageFiles, GoodBallCount, GoodBallSize, GoodBallRow, GoodBallCol, Result)</l>
+<l>for Idx := 0 to |ImageFiles| - 1 by 1</l>
+<l>    if (Result[Idx] == 'good')</l>
+<l>        FP := FP + 1</l>
+<l>    else</l>
+<l>        TN := TN + 1</l>
+<l>    endif</l>
+<l>endfor</l>
+<l>* stop()</l>
+<c></c>
+<l>list_image_files ('/test/pitch', 'default', [], ImageFiles)</l>
+<l>Inspection (GoodSample, ImageFiles, GoodBallCount, GoodBallSize, GoodBallRow, GoodBallCol, Result)</l>
+<l>for Idx := 0 to |ImageFiles| - 1 by 1</l>
+<l>    if (Result[Idx] == 'good')</l>
+<l>        FP := FP + 1</l>
+<l>    else</l>
+<l>        TN := TN + 1</l>
+<l>    endif</l>
+<l>endfor</l>
+<l>* stop()</l>
+<c></c>
+<l>list_image_files ('/test/size', 'default', [], ImageFiles)</l>
+<l>Inspection (GoodSample, ImageFiles, GoodBallCount, GoodBallSize, GoodBallRow, GoodBallCol, Result)</l>
+<l>for Idx := 0 to |ImageFiles| - 1 by 1</l>
+<l>    if (Result[Idx] == 'good')</l>
+<l>        FP := FP + 1</l>
+<l>    else</l>
+<l>        TN := TN + 1</l>
+<l>    endif</l>
+<l>endfor</l>
+<l>* stop()</l>
+<c></c>
+<c></c>
+<l>count_seconds (End)</l>
+<c></c>
+<l>Time := End - Start</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+<procedure name="Inspection">
+<interface>
+<io>
+<par name="GoodSample" base_type="iconic" dimension="0"/>
+</io>
+<ic>
+<par name="ImageFiles" base_type="ctrl" dimension="0"/>
+<par name="GoodBallCount" base_type="ctrl" dimension="0"/>
+<par name="GoodBallSize" base_type="ctrl" dimension="0"/>
+<par name="GoodBallRow" base_type="ctrl" dimension="0"/>
+<par name="GoodBallCol" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="ResultList" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>ResultList := []</l>
+<c></c>
+<l>tuple_mean (GoodBallSize, MeanSize)</l>
+<c></c>
+<l>for ImageIndex := 0 to |ImageFiles| - 1 by 1</l>
+<l>    Result := 'good'</l>
+<l>    read_image (Image, ImageFiles[ImageIndex])</l>
+<c>    </c>
+<l>    binary_threshold (Image, Balls, 'max_separability', 'light', UsedThreshold)</l>
+<l>    connection (Balls, Balls)</l>
+<l>    sort_region (Balls, Balls, 'upper_left', 'true', 'row')</l>
+<l>    opening_circle (Balls, Balls, 3.5)</l>
+<l>    select_shape (Balls, Balls, 'circularity', 'and', 0.7, 1)</l>
+<l>    select_shape (Balls, Balls, 'area', 'and', 50, 200)</l>
+<c>    </c>
+<l>    region_features (Balls, 'area', Size)</l>
+<l>    region_features (Balls, 'row', Row)</l>
+<l>    region_features (Balls, 'column', Col)</l>
+<c>    </c>
+<l>    count_obj (Balls, Number)</l>
+<l>    if (Number != GoodBallCount)</l>
+<l>        Result := 'bad'</l>
+<l>    endif</l>
+<l>    tuple_min([GoodBallCount, Number - 1], Number)</l>
+<l>    for BallIndex := 0 to Number - 1 by 1</l>
+<l>        if (abs(Size[BallIndex] - MeanSize) &gt; 30)</l>
+<l>            Result := 'bad'</l>
+<l>        endif</l>
+<l>        if (abs(Row[BallIndex] - GoodBallRow[BallIndex]) &gt; 15)</l>
+<l>            Result := 'bad'</l>
+<l>        endif</l>
+<l>        if (abs(Col[BallIndex] - GoodBallCol[BallIndex]) &gt; 15)</l>
+<l>            Result := 'bad'</l>
+<l>        endif</l>
+<l>    endfor</l>
+<l>    tuple_concat (ResultList, Result, ResultList)</l>
+<l>endfor</l>
+<l>return ()</l>
+</body>
+<docu id="Inspection">
+<parameters>
+<parameter id="GoodBallCol"/>
+<parameter id="GoodBallCount"/>
+<parameter id="GoodBallRow"/>
+<parameter id="GoodBallSize"/>
+<parameter id="GoodSample"/>
+<parameter id="ImageFiles"/>
+<parameter id="ResultList"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>
