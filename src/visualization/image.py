@@ -21,6 +21,6 @@ def show_images_with_data(title, images, data, is_float=False):
             if is_float:
                 ax.set_title(f"\n{data[i]:.4f}", fontsize=20)
             else:
-                ax.set_title(f"\n{data[i]}", fontsize=20)
+                ax.set_title(f"\n{data}", fontsize=20)
         ax.axis("off")
     plt.show()

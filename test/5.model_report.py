@@ -55,6 +55,8 @@ if __name__ == "__main__":
     optimal_idx = np.argmax(tpr - fpr)
     optimal_threshold = thresholds[optimal_idx]
 
+    data_loader.save_threshold(optimal_threshold)
+
     y_pred = [1 if score >= optimal_threshold else 0 for score in scores]
 
     accuracy = accuracy_score(y_test_bin, y_pred)

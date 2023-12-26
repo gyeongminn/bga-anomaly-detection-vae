@@ -55,3 +55,13 @@ def load_test_data():
 def tensor_slices(x_data):
     batch_size = config.parameter["batch_size"]
     return data.Dataset.from_tensor_slices(x_data).batch(batch_size)
+
+
+def save_threshold(threshold):
+    with open(config.parameter["base_dir"] + "/data/threshold.txt", "w") as f:
+        f.write(str(threshold))
+
+
+def load_threshold():
+    with open(config.parameter["base_dir"] + "/data/threshold.txt", "r") as f:
+        return float(f.read())
