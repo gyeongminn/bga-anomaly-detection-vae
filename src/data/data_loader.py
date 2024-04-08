@@ -5,6 +5,8 @@ from tensorflow import data
 from configs import config
 
 
+DATA_FOLDER_PATH = config.parameter["base_dir"] + "/data/"
+
 def convert_numpy_arr(data_gen):
     x, y = [], []
     for images, labels in data_gen:
@@ -20,7 +22,7 @@ def convert_numpy_arr(data_gen):
 
 def load_train_data():
     train_gen = image_dataset_from_directory(
-        config.parameter["base_dir"] + "/data/train",
+        DATA_FOLDER_PATH + "train",
         labels="inferred",
         label_mode="int",
         class_names=["good"],
@@ -34,10 +36,26 @@ def load_train_data():
 
     return x_train, y_train
 
+def load_gen_vae_data():
+    train_gen = image_dataset_from_directory(
+        DATA_FOLDER_PATH + "gen_vae",
+        labels="inferred",
+        label_mode="int",
+        class_names=["gen"],
+        color_mode="grayscale",
+        batch_size=config.parameter["batch_size"],
+        image_size=config.parameter["image_size"],
+        seed=config.parameter["random_seed"],
+        shuffle=True,
+    )
+    x_train, y_train = convert_numpy_arr(train_gen)
+
+    return x_train, y_train
+
 
 def load_test_data():
     test_gen = image_dataset_from_directory(
-        config.parameter["base_dir"] + "/data/test",
+        DATA_FOLDER_PATH + "test",
         labels="inferred",
         label_mode="int",
         class_names=config.parameter["class_names"],
@@ -58,10 +76,11 @@ def tensor_slices(x_data):
 
 
 def save_threshold(threshold):
-    with open(config.parameter["base_dir"] + "/data/threshold.txt", "w") as f:
+
+    with open(DATA_FOLDER_PATH + "threshold.txt", "w") as f:
         f.write(str(threshold))
 
 
 def load_threshold():
-    with open(config.parameter["base_dir"] + "/data/threshold.txt", "r") as f:
+    with open(DATA_FOLDER_PATH + "threshold.txt", "r") as f:
         return float(f.read())
