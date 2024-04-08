@@ -145,5 +145,10 @@ if __name__ == "__main__":
         f1scores.append(f_score[0])
         aurocs.append(auroc)
 
+    mean, variance = np.mean(aurocs), np.var(aurocs)
+    print("AUROC :  ", aurocs)
+    print(f"AUROC 평균: {mean}, 분산: {variance}")
+
     print("F1 scores :", f1scores)
-    print("AUROCs :  ", aurocs)
+    mean, variance = np.mean(f1scores), np.var(f1scores)
+    print(f"F1 scores 평균: {mean}, 분산: {variance}")

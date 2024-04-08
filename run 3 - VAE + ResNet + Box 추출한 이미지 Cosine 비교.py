@@ -54,6 +54,7 @@ def apply_mask_for_each_box(image, boxes):
 
     for box in boxes:
         x, y, w, h = box
+        result_image[y:y+h, x:x]
         result_image[x:x + w, y:y + h] = image[x:x + w, y:y + h]
 
     return result_image
