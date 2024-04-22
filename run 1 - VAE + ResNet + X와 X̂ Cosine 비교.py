@@ -16,10 +16,11 @@ from tensorflow.keras.applications.resnet50 import preprocess_input
 from src.data import data_loader
 from src.model.vae_agent import VaeAgent
 from src.visualization.image import show_images_with_data
-from src.visualization.plot import show_score_density_plot, show_roc_curve
+from src.visualization.plot import show_score_density_plot, show_roc_curve, show_confusion_matrix
 import tensorflow as tf
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.models import Model
+
 
 def create_feature_extractor():
     # ResNet50 모델을 이미지넷 가중치와 함께 불러옴, 최상위 분류 레이어는 포함하지 않음
@@ -74,6 +75,7 @@ def get_bounding_boxes(image, size=64):
     bounding_boxes = bounding_boxes[:size]
 
     return length, np.array(bounding_boxes)
+
 
 if __name__ == "__main__":
     vae = VaeAgent()
@@ -130,6 +132,8 @@ if __name__ == "__main__":
         report = classification_report(
             y_test_bin, y_pred, target_names=["defective", "good"]
         )
+
+        show_confusion_matrix(y_test_bin, y_pred)
 
         print(f"threshold: {optimal_threshold}")
         print()

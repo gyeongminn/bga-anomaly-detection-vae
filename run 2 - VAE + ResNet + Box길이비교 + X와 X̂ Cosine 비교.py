@@ -13,7 +13,7 @@ from tensorflow.keras.applications.resnet50 import preprocess_input
 from src.data import data_loader
 from src.model.vae_agent import VaeAgent
 from src.visualization.image import show_images_with_data
-from src.visualization.plot import show_score_density_plot, show_roc_curve
+from src.visualization.plot import show_score_density_plot, show_roc_curve, show_confusion_matrix
 import tensorflow as tf
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.models import Model
@@ -128,6 +128,8 @@ if __name__ == "__main__":
         report = classification_report(
             y_test_bin, y_pred, target_names=["defective", "good"]
         )
+
+        show_confusion_matrix(y_test_bin, y_pred)
 
         print(f"threshold: {optimal_threshold}")
         print()

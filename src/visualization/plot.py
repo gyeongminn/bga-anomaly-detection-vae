@@ -1,3 +1,4 @@
+from sklearn.metrics import confusion_matrix
 from sklearn.metrics import auc
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -42,4 +43,15 @@ def show_roc_curve(fpr, tpr):
     plt.ylabel("True Positive Rate")
     plt.title("Receiver Operating Characteristic")
     plt.legend(loc="lower right")
+    plt.show()
+
+
+def show_confusion_matrix(y_test, y_pred):
+    plt.figure(figsize=(10, 7))
+    sns.heatmap(confusion_matrix(y_test, y_pred),
+                annot=True, fmt="d", linewidths=.5, cmap="Blues",
+                xticklabels=["Defective", "Good"], yticklabels=["Defective", "Good"])
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.title('Confusion Matrix')
     plt.show()
